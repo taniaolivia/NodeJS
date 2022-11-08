@@ -29,3 +29,17 @@ exports.createAPost = (req, res) => {
         }
     });
 }
+
+exports.getAPost = (req, res) => {
+    Post.find({_id: req.params.post_id}, (error, post) => {
+        if(error){
+            res.status(500);
+            console.log(error);
+            res.json({message: "Erreur serveur"});
+        }
+        else{
+            res.status(200);
+            res.json(post);
+        }
+    })
+}
