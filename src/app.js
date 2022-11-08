@@ -12,9 +12,11 @@ mongoose.connect("mongodb://mongo/apinode");
 server.use(express.urlencoded());
 server.use(express.json());
 
-
 const postRoute = require("./api/routes/postRoute");
 postRoute(server);
+
+const commentRoute = require("./api/routes/commentRoute");
+commentRoute(server);
 
 server.listen(port, hostname);
 

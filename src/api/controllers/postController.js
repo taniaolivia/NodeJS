@@ -34,7 +34,7 @@ exports.createAPost = (req, res) => {
 
 // Supprimer tous les posts
 exports.deleteAllPosts = (req, res) => {
-    Post.deleteMany({}, (error, post) => {
+    Post.deleteMany({}, (error) => {
         if(error){
             res.status(500);
             console.log(error);
@@ -42,14 +42,14 @@ exports.deleteAllPosts = (req, res) => {
         }
         else{
             res.status(200);
-            res.json(post);
+            res.json({message: "Articles supprimés"});
         }
     })
 }
 
 // Afficher un post par id
 exports.getAPost = (req, res) => {
-    Post.find({_id: req.params.post_id}, (error, post) => {
+    Post.findOne({_id: req.params.post_id}, (error, post) => {
         if(error){
             res.status(500);
             console.log(error);
@@ -64,7 +64,7 @@ exports.getAPost = (req, res) => {
 
 // Supprimer un post par id
 exports.deleteAPost = (req, res) => {
-    Post.deleteOne({_id: req.params.post_id}, (error, post) => {
+    Post.deleteOne({_id: req.params.post_id}, (error) => {
         if(error){
             res.status(500);
             console.log(error);
@@ -72,7 +72,22 @@ exports.deleteAPost = (req, res) => {
         }
         else{
             res.status(200);
-            res.json(post);
+            res.json({message: "Article supprimé"});
         }
     })
+}
+
+// Modifier un post
+exports.updateAPost = (req, res) => {
+    Post.findByIdAndUpdate(req.params.post_id, req.body, {}, (error, post) => {
+        if(error){
+            res.status(401);
+            console.log(error);
+            res.json({message: "Rêquete invalide"});
+        }
+        else{
+            res.status(200);
+            res.json(post);
+        }
+    });
 }
