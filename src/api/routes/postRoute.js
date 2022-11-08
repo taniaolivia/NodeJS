@@ -3,7 +3,8 @@ module.exports = (server) => {
 
 server.route("/posts")
 .get(postController.listAllPosts)
-.post(postController.createAPost);
+.post(postController.createAPost)
+.delete(postController.deleteAllPosts);
 
 server.route("/posts/:post_id") // req.params.post_id
 .get(postController.getAPost)
