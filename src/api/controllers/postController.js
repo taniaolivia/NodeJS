@@ -1,5 +1,5 @@
 const Post = require("../models/postModel");
-const textApiProvider = require("../../providers/textApiProvider");
+const textApiProvider = require("../providers/textApiProvider");
 
 // Afficher la liste de tous les posts
 exports.listAllPosts = (req, res) => {
