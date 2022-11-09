@@ -1,5 +1,5 @@
 const Post = require("../models/postModel");
-const axios = require("axios");
+const textApiProvider = require("../../providers/textApiProvider");
 
 // Afficher la liste de tous les posts
 exports.listAllPosts = (req, res) => {
@@ -17,32 +17,28 @@ exports.listAllPosts = (req, res) => {
 }
 
 // Créer un post
-exports.createAPost = (req, res, error) => {
-    if(error){
-        res.status(500);
-        console.log(error);
-        res.json({message: "Erreur serveur"});
-    }
-    else{
-        axios.get("https://loripsum.net/api/plaintext").then(result => {
-            const data = result.data;
-            const content = data.replace(/[\n\r]/g, '');
+exports.createAPost = (req, res) => {
+    let newPost = new Post(req.body);
     
-            let newPost = new Post({title: req.body.title, content: content});
-    
-            newPost.save((error, post) => {
-                if(error){
-                    res.status(401);
-                    console.log(error);
-                    res.json({message: "Rêquete invalide"});
-                }
-                else{
-                    res.status(200);
-                    res.json(post);
-                }
-            });
+    let randomTextPromise = textApiProvider.getRandomText();
+
+    randomTextPromise.then((response) => {
+        if(!newPost.content){
+            newPost.content = response;
+        }
+
+        newPost.save((error, post) => {
+            if(error){
+                res.status(401);
+                console.log(error);
+                res.json({message: "Rêquete invalide"});
+            }
+            else{
+                res.status(200);
+                res.json(post);
+            }
         });
-    }
+    })     
 }
 
 // Supprimer tous les posts
