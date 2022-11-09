@@ -18,31 +18,28 @@ exports.listAllPosts = (req, res) => {
 
 // Créer un post
 exports.createAPost = (req, res, error) => {
-    if(error){
-        res.status(500);
-        console.log(error);
-        res.json({message: "Erreur serveur"});
-    }
-    else{
-        axios.get("https://loripsum.net/api/plaintext").then(result => {
-            const data = result.data;
-            const content = data.replace(/[\n\r]/g, '');
-    
-            let newPost = new Post({title: req.body.title, content: content});
-    
-            newPost.save((error, post) => {
-                if(error){
-                    res.status(401);
-                    console.log(error);
-                    res.json({message: "Rêquete invalide"});
-                }
-                else{
-                    res.status(200);
-                    res.json(post);
-                }
-            });
+    let newPost = new Post(req.body);
+
+    axios.get("https://loripsum.net/api/plaintext", {responseType: "text"}).then(result => {
+        const data = result.data;
+        const content = data.replace(/[\n\r]/g, '');
+
+        if(!newPost.content){
+            newPost.content = content;
+        }
+
+        newPost.save((error, post) => {
+            if(error){
+                res.status(401);
+                console.log(error);
+                res.json({message: "Rêquete invalide"});
+            }
+            else{
+                res.status(200);
+                res.json(post);
+            }
         });
-    }
+    });
 }
 
 // Supprimer tous les posts
