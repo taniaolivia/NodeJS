@@ -1,4 +1,5 @@
 const Post = require("../models/postModel");
+const axios = require("axios");
 
 // Afficher la liste de tous les posts
 exports.listAllPosts = (req, res) => {
@@ -17,18 +18,23 @@ exports.listAllPosts = (req, res) => {
 
 // Créer un post
 exports.createAPost = (req, res) => {
-    let newPost = new Post(req.body);
+    axios.get("https://loripsum.net/api/plaintext").then(result => {
+        const data = result.data;
+        const content = data.replace(/[\n\r]/g, '');
 
-    newPost.save((error, post) => {
-        if(error){
-            res.status(401);
-            console.log(error);
-            res.json({message: "Rêquete invalide"});
-        }
-        else{
-            res.status(200);
-            res.json(post);
-        }
+        let newPost = new Post({title: req.body.title, content: content});
+
+        newPost.save((error, post) => {
+            if(error){
+                res.status(401);
+                console.log(error);
+                res.json({message: "Rêquete invalide"});
+            }
+            else{
+                res.status(200);
+                res.json(post);
+            }
+        });
     });
 }
 
